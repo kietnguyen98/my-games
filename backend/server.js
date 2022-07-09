@@ -34,7 +34,9 @@ dbConnection.once("open", function () {
 });
 
 app.use("/users", userRouter);
-
+app.get("/", (req, res) => {
+  res.send("Hello from Express!");
+});
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });
