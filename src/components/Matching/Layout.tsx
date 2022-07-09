@@ -42,7 +42,7 @@ const MatchingLayout: FunctionComponent<matchingLayoutProps> = () => {
 
   return (
     <React.Fragment>
-      <div className="h-screen w-full flex items-center justify-center flex-col xl:gap-8 md:gap-4 gap-8">
+      <div className="sm:h-screen min-h-screen sm:py-0 py-8  w-full flex items-center justify-center flex-col xl:gap-8 md:gap-4 gap-8">
         {isPLay ? (
           <React.Fragment>
             {isGameEnd ? null : (
