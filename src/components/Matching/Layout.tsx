@@ -6,7 +6,7 @@ import Board from "./Board";
 
 type matchingLayoutProps = {};
 
-const MatchingLayout: FunctionComponent<matchingLayoutProps> = ({}) => {
+const MatchingLayout: FunctionComponent<matchingLayoutProps> = () => {
   const [isPLay, setIsPlay] = React.useState(false);
 
   const playGame = (level: string) => {
