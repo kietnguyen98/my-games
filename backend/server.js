@@ -2,13 +2,11 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
-
+const port = 5000;
 // routes
 const userRouter = require("./routes/user.route");
 
 const app = express();
-const port = process.env.PORT || 5000;
-
 app.use(cors());
 app.use(express.json());
 
@@ -34,9 +32,7 @@ dbConnection.once("open", function () {
 });
 
 app.use("/users", userRouter);
-app.get("/", (req, res) => {
-  res.send("Hello from Express!");
-});
-app.listen(port, () => {
+app.get("/", (req, res) => res.send("Hello from Express!"));
+app.listen(process.env.PORT || port, () => {
   console.log(`Server is running on port: ${port}`);
 });
