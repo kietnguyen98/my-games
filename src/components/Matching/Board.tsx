@@ -13,6 +13,12 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
     window.localStorage.getItem("level") === "4x4" ? 4 : 6
   );
 
+  React.useEffect(() => {
+    if (window) {
+      setBoardSize(window.localStorage.getItem("level") === "4x4" ? 4 : 6);
+    }
+  }, []);
+
   const [cardArray, setCardArray] = React.useState<Array<number>>([]);
   const [flippedCardList, setFlippedCardList] = React.useState<Array<number>>(
     []
@@ -210,7 +216,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
           </p>
         </div>
       ) : boardSize === 4 ? (
-        <div className="w-full h-full rounded-lg border-2 border-indigo-500/80 bg-indigo-100/80 grid grid-cols-4 gap-1 p-1">
+        <div className="w-full h-full rounded-lg border-2 border-teal-500/80 bg-teal-100/80 grid grid-cols-4 gap-1 p-1">
           {cardArray?.length > 0 &&
             cardArray.map((key, index) => {
               return (
@@ -229,7 +235,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
         </div>
       ) : (
         boardSize === 6 && (
-          <div className="w-full h-full rounded-lg border-2 border-indigo-500/80 bg-indigo-100/80 grid sm:grid-cols-6 grid-cols-4 gap-1 p-1">
+          <div className="w-full h-full rounded-lg border-2 border-teal-500/80 bg-teal-100/80 grid sm:grid-cols-6 grid-cols-4 gap-1 p-1">
             {cardArray?.length > 0 &&
               cardArray.map((key, index) => {
                 return (
