@@ -52,12 +52,12 @@ const Card: FunctionComponent<cardProps> = ({
           onClick={() => flipCard(imgIndex)}
           className={
             `flip-card bg-transparent 
-            xl:h-${size === 6 ? "20" : "24"} 
-            xl:w-${size === 6 ? "20" : "24"} 
-            md:h-${size === 6 ? "16" : "20"} 
-            md:w-${size === 6 ? "16" : "20"} 
-            w-${size === 6 ? "16" : "16"} 
-            h-${size === 6 ? "16" : "16"} 
+            xl:h-20
+            xl:w-20
+            md:h-16
+            md:w-16
+            w-16
+            h-16
             rounded-sm cursor-pointer transition-all duration-300 ` +
             (isClear && "bg-teal-100/80 shadow-none")
           }
