@@ -199,6 +199,8 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
 
   // user submit to highscore board
   const [userName, setUserName] = React.useState("");
+  const [userSubmitSuccessfully, setUserSubmitSuccessfully] =
+    React.useState(false);
   const [alertModalContent, setAlertModalContent] = React.useState("");
 
   const userSubmitInfo = () => {
@@ -237,9 +239,12 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
           }
         );
         if (result?.status === 200) {
+          setUserName("");
+          setUserSubmitSuccessfully(true);
           setIsLoading(false);
           return setAlertModalContent("Submit information successfully !");
         } else {
+          setUserName("");
           setIsLoading(false);
           return setAlertModalContent("An error occurred, please try again !");
         }
@@ -280,23 +285,23 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
             </React.Fragment>
           )}
           {isDone ? (
-            <div className="w-full flex justify-center flex-col items-center gap-4 sm:px-0 px-4">
+            <div className="w-full flex justify-center flex-col items-center gap-8 sm:px-0 px-4">
               <p className="text-2xl text-cyan-500 text-center font-bold uppercase">
                 Congratulations !, you have finished the game
               </p>
               <div className="w-full flex justify-center gap-1">
                 <img
-                  className="sm:h-32 sm:w-32 w-24 h-24"
+                  className="lg:h-40 lg:w-40 sm:h-32 sm:w-32 w-24 h-24"
                   src="/images/matching/pepe-congratulation.gif"
                   alt="pepe congrate"
                 />
                 <img
-                  className="sm:h-32 sm:w-32 w-24 h-24"
+                  className="lg:h-40 lg:w-40 sm:h-32 sm:w-32 w-24 h-24"
                   src="/images/matching/pepe-congratulation.gif"
                   alt="pepe congrate"
                 />
                 <img
-                  className="sm:h-32 sm:w-32 w-24 h-24"
+                  className="lg:h-40 lg:w-40 sm:h-32 sm:w-32 w-24 h-24"
                   src="/images/matching/pepe-congratulation.gif"
                   alt="pepe congrate"
                 />
@@ -304,33 +309,42 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
               <p className="text-lg text-cyan-700 text-center">
                 your playtime is {displayPlaytime(timerString)}
               </p>
-              {isOnTop ? (
-                <div className="w-full flex flex-col gap-4 justify-center items-center px-8">
-                  <p className="text-slate-600 text-md text-center">
-                    Your score is enough to enter the top 5, please enter your
-                    name to save it in the high score board !
-                  </p>
-                  <div className="flex gap-0 justify-center items-center">
-                    <input
-                      className="text-md text-slate-600 px-4 py-1 bg-white border-solid border-2 border-slate-200 shadow-md rounded-tl-md rounded-bl-md"
-                      type="text"
-                      placeholder="Enter your name here"
-                      value={userName}
-                      onChange={(e) => setUserName(e.target.value)}
-                    />
-                    <button
-                      onClick={userSubmitInfo}
-                      className="px-2 py-1 bg-amber-500 text-md text-slate-50 rounded-tr-md rounded-br-md border-solid border-2 border-slate-200 shadow-md"
-                    >
-                      Submit
-                    </button>
+              {!userSubmitSuccessfully ? (
+                isOnTop ? (
+                  <div className="w-full flex flex-col gap-4 justify-center items-center px-8">
+                    <p className="text-slate-600 text-md text-center">
+                      Your score is enough to enter the top 5, please enter your
+                      name to save it in the high score board !
+                    </p>
+                    <div className="flex gap-0 justify-center items-center">
+                      <input
+                        className="text-md text-slate-600 px-4 py-1 bg-white border-solid border-2 border-slate-200 shadow-md rounded-tl-md rounded-bl-md"
+                        type="text"
+                        placeholder="Enter your name here"
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                      />
+                      <button
+                        onClick={userSubmitInfo}
+                        className="px-2 py-1 bg-amber-500 text-md text-slate-50 rounded-tr-md rounded-br-md border-solid border-2 border-slate-200 shadow-md"
+                      >
+                        Submit
+                      </button>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="w-full flex justify-center items-center px-8">
+                    <p className="text-slate-600 text-md text-center">
+                      your score is not enough to get into top 5. Try playing
+                      again
+                    </p>
+                  </div>
+                )
               ) : (
                 <div className="w-full flex justify-center items-center px-8">
-                  <p className="text-slate-600 text-md text-center">
-                    your score is not enough to get into top 5. Try playing
-                    again
+                  <p className="text-sky-600 text-lg font-bold text-center">
+                    You have successfully submitted the information ! let's keep
+                    playing the game
                   </p>
                 </div>
               )}
