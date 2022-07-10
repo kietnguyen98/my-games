@@ -66,6 +66,7 @@ const MatchingLayout: FunctionComponent<matchingLayoutProps> = () => {
           );
           setIsLoading(false);
         } else {
+          setListHighScore([]);
           setIsLoading(false);
         }
       };
