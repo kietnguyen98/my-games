@@ -32,7 +32,7 @@ dbConnection.once("open", function () {
 });
 
 app.use("/users", userRouter);
-app.get("/", (req, res) => res.send("Hello from Express!"));
+app.get("/", (req, res) => res.send("hello World!"));
 app.listen(process.env.PORT || port, () => {
   console.log(`Server is running on port: ${port}`);
 });

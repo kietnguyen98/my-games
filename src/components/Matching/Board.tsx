@@ -1,8 +1,10 @@
 // import modules from library
 import React, { FunctionComponent } from "react";
-
+import axios from "axios";
 // import modules from local
 import Card from "./Card";
+import Loading from "../Common/Loading";
+import AnnoucementModal from "../Common/AnnoucementModal";
 
 type boardProps = {
   gameEnd: any;
@@ -13,11 +15,43 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
     window.localStorage.getItem("level") === "4x4" ? 4 : 6
   );
 
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isOnTop, setIsOnTop] = React.useState(false);
+
   React.useEffect(() => {
     if (window) {
+      setIsLoading(true);
       setBoardSize(window.localStorage.getItem("level") === "4x4" ? 4 : 6);
+
+      const getListHighScore = async (playMode: string) => {
+        const result = await axios.get(
+          process.env.REACT_APP_DEPLOY_API_ENDPOINT + "/users/users",
+          {
+            params: {
+              playMode: playMode,
+            },
+          }
+        );
+
+        const listHighScore = result?.data;
+        if (listHighScore.length === 5) {
+          for (let i = 0; i < listHighScore.length; i++) {
+            if (timerString.localeCompare(listHighScore[i].playTime) < 0) {
+              setIsOnTop(true);
+              return setIsLoading(false);
+            }
+          }
+        } else {
+          setIsOnTop(true);
+          return setIsLoading(false);
+        }
+        return setIsLoading(false);
+      };
+
+      getListHighScore(window?.localStorage?.getItem("level") ?? "");
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [window]);
 
   const [cardArray, setCardArray] = React.useState<Array<number>>([]);
   const [flippedCardList, setFlippedCardList] = React.useState<Array<number>>(
@@ -117,7 +151,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
 
   //   const [seconds, setSeconds] = React.useState(0)
 
-  const [timerString, setTimerString] = React.useState<string>("00:00:00");
+  const [timerString, setTimerString] = React.useState<string>("00:00:15");
 
   React.useEffect(() => {
     var second = 0;
@@ -163,98 +197,194 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
     return hoursStr + minutesStr + secondsStr;
   };
 
+  // user submit to highscore board
+  const [userName, setUserName] = React.useState("");
+  const [alertModalContent, setAlertModalContent] = React.useState("");
+
+  const userSubmitInfo = () => {
+    if (!userName) {
+      alert("You haven't enter your name yet ");
+    } else {
+      const createNewUser = async (userName: string) => {
+        setIsLoading(true);
+        const highScoreResult = await axios.get(
+          process.env.REACT_APP_DEPLOY_API_ENDPOINT + "/users/users",
+          {
+            params: {
+              playMode: window.localStorage.getItem("level"),
+            },
+          }
+        );
+
+        for (let i = 0; i < highScoreResult?.data.length; i++) {
+          if (
+            highScoreResult?.data[i].userName.toLowerCase() ===
+            userName.toLowerCase()
+          ) {
+            setIsLoading(false);
+            return setAlertModalContent(
+              "This username is already in use, please choose another name !"
+            );
+          }
+        }
+
+        const result = await axios.post(
+          process.env.REACT_APP_DEPLOY_API_ENDPOINT + "/users/add-user",
+          {
+            userName: userName,
+            playMode: window.localStorage.getItem("level"),
+            playTime: timerString,
+          }
+        );
+        if (result?.status === 200) {
+          setIsLoading(false);
+          return setAlertModalContent("Submit information successfully !");
+        } else {
+          setIsLoading(false);
+          return setAlertModalContent("An error occurred, please try again !");
+        }
+      };
+
+      createNewUser(userName);
+    }
+  };
+
   return (
-    <div className="w-full flex flex-col md:gap-1 gap-2 items-center justify-center">
-      {!isDone && (
-        <React.Fragment>
-          <div className="flex justify-center items-center gap-2">
-            <img
-              className="h-6 w-6"
-              src="images/matching/timer.png"
-              alt="timer"
-            ></img>
-            <div className="px-2 py-0 border-2 border-solid border-slate-600 rounded-lg bg-sky-200">
-              <p className="text-sm text-bold text-slate-600 tracking-wider">
-                {timerString}
-              </p>
-            </div>
-          </div>
-          <div className="flex justify-center">
-            <p className="text-md text-center text-slate-600">
-              Your Point:{" "}
-              <span className="font-bold">
-                {userPoint} / {Math.pow(boardSize, 2) / 2}
-              </span>
-            </p>
-          </div>
-        </React.Fragment>
-      )}
-      {isDone ? (
-        <div className="w-full flex justify-center flex-col items-center gap-8 sm:px-0 px-4">
-          <p className="text-2xl text-cyan-500 text-center font-bold uppercase">
-            Congratulations !, you have finished the game
-          </p>
-          <div className="w-full flex justify-center">
-            <img
-              className="sm:h-32 sm:w-32 w-24 h-24"
-              src="/images/matching/pepe-congratulation.gif"
-              alt="pepe congrate"
-            />
-            <img
-              className="sm:h-32 sm:w-32 w-24 h-24"
-              src="/images/matching/pepe-congratulation.gif"
-              alt="pepe congrate"
-            />
-            <img
-              className="sm:h-32 sm:w-32 w-24 h-24"
-              src="/images/matching/pepe-congratulation.gif"
-              alt="pepe congrate"
-            />
-          </div>
-          <p className="text-xl text-cyan-700 text-center">
-            your playtime is {displayPlaytime(timerString)}
-          </p>
-        </div>
-      ) : boardSize === 4 ? (
-        <div className="w-full h-full rounded-lg border-2 border-teal-500/80 bg-teal-100/80 grid grid-cols-4 gap-1 p-1">
-          {cardArray?.length > 0 &&
-            cardArray.map((key, index) => {
-              return (
-                <div key={index + 1}>
-                  <Card
-                    imgIndex={key}
-                    cardFlip={cardFlip}
-                    cardHideList={cardToHide}
-                    removeIndexFromCardToHide={removeIndexFromCardToHide}
-                    isClear={resultArray?.indexOf(key) >= 0 ? true : false}
-                    size={4}
-                  />
-                </div>
-              );
-            })}
-        </div>
+    <React.Fragment>
+      {isLoading ? (
+        <Loading />
       ) : (
-        boardSize === 6 && (
-          <div className="w-full h-full rounded-lg border-2 border-teal-500/80 bg-teal-100/80 grid sm:grid-cols-6 grid-cols-4 gap-1 p-1">
-            {cardArray?.length > 0 &&
-              cardArray.map((key, index) => {
-                return (
-                  <div key={index + 1}>
-                    <Card
-                      imgIndex={key}
-                      cardFlip={cardFlip}
-                      cardHideList={cardToHide}
-                      removeIndexFromCardToHide={removeIndexFromCardToHide}
-                      isClear={resultArray?.indexOf(key) >= 0 ? true : false}
-                      size={6}
+        <div className="w-full flex flex-col md:gap-1 gap-2 items-center justify-center">
+          {!isDone && (
+            <React.Fragment>
+              <div className="flex justify-center items-center gap-2">
+                <img
+                  className="h-6 w-6"
+                  src="images/matching/timer.png"
+                  alt="timer"
+                ></img>
+                <div className="px-2 py-0 border-2 border-solid border-slate-600 rounded-lg bg-sky-200">
+                  <p className="text-sm text-bold text-slate-600 tracking-wider">
+                    {timerString}
+                  </p>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <p className="text-md text-center text-slate-600">
+                  Your Point:{" "}
+                  <span className="font-bold">
+                    {userPoint} / {Math.pow(boardSize, 2) / 2}
+                  </span>
+                </p>
+              </div>
+            </React.Fragment>
+          )}
+          {isDone ? (
+            <div className="w-full flex justify-center flex-col items-center gap-4 sm:px-0 px-4">
+              <p className="text-2xl text-cyan-500 text-center font-bold uppercase">
+                Congratulations !, you have finished the game
+              </p>
+              <div className="w-full flex justify-center gap-1">
+                <img
+                  className="sm:h-32 sm:w-32 w-24 h-24"
+                  src="/images/matching/pepe-congratulation.gif"
+                  alt="pepe congrate"
+                />
+                <img
+                  className="sm:h-32 sm:w-32 w-24 h-24"
+                  src="/images/matching/pepe-congratulation.gif"
+                  alt="pepe congrate"
+                />
+                <img
+                  className="sm:h-32 sm:w-32 w-24 h-24"
+                  src="/images/matching/pepe-congratulation.gif"
+                  alt="pepe congrate"
+                />
+              </div>
+              <p className="text-lg text-cyan-700 text-center">
+                your playtime is {displayPlaytime(timerString)}
+              </p>
+              {isOnTop ? (
+                <div className="w-full flex flex-col gap-4 justify-center items-center px-8">
+                  <p className="text-slate-600 text-md text-center">
+                    Your score is enough to enter the top 5, please enter your
+                    name to save it in the high score board !
+                  </p>
+                  <div className="flex gap-0 justify-center items-center">
+                    <input
+                      className="text-md text-slate-600 px-4 py-1 bg-white border-solid border-2 border-slate-200 shadow-md rounded-tl-md rounded-bl-md"
+                      type="text"
+                      placeholder="Enter your name here"
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
                     />
+                    <button
+                      onClick={userSubmitInfo}
+                      className="px-2 py-1 bg-amber-500 text-md text-slate-50 rounded-tr-md rounded-br-md border-solid border-2 border-slate-200 shadow-md"
+                    >
+                      Submit
+                    </button>
                   </div>
-                );
-              })}
-          </div>
-        )
+                </div>
+              ) : (
+                <div className="w-full flex justify-center items-center px-8">
+                  <p className="text-slate-600 text-md text-center">
+                    your score is not enough to get into top 5. Try playing
+                    again
+                  </p>
+                </div>
+              )}
+            </div>
+          ) : boardSize === 4 ? (
+            <div className="w-full h-full rounded-lg border-2 border-indigo-500/80 bg-indigo-100/80 grid grid-cols-4 gap-1 p-1">
+              {cardArray?.length > 0 &&
+                cardArray.map((key, index) => {
+                  return (
+                    <div key={index + 1}>
+                      <Card
+                        imgIndex={key}
+                        cardFlip={cardFlip}
+                        cardHideList={cardToHide}
+                        removeIndexFromCardToHide={removeIndexFromCardToHide}
+                        isClear={resultArray?.indexOf(key) >= 0 ? true : false}
+                        size={4}
+                      />
+                    </div>
+                  );
+                })}
+            </div>
+          ) : (
+            boardSize === 6 && (
+              <div className="w-full h-full rounded-lg border-2 border-indigo-500/80 bg-indigo-100/80 grid sm:grid-cols-6 grid-cols-4 gap-1 p-1">
+                {cardArray?.length > 0 &&
+                  cardArray.map((key, index) => {
+                    return (
+                      <div key={index + 1}>
+                        <Card
+                          imgIndex={key}
+                          cardFlip={cardFlip}
+                          cardHideList={cardToHide}
+                          removeIndexFromCardToHide={removeIndexFromCardToHide}
+                          isClear={
+                            resultArray?.indexOf(key) >= 0 ? true : false
+                          }
+                          size={6}
+                        />
+                      </div>
+                    );
+                  })}
+              </div>
+            )
+          )}
+        </div>
       )}
-    </div>
+      {alertModalContent && (
+        <AnnoucementModal
+          content={alertModalContent}
+          closeModal={() => setAlertModalContent("")}
+        />
+      )}
+    </React.Fragment>
   );
 };
 

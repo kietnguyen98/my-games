@@ -18,10 +18,15 @@ module.exports = {
             opacity: 1,
           },
         },
+        spin: {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
       },
       animation: {
         zoomInZoomOut: "zoomInZoomOut 1.5s ease-out infinite",
         dropDown: "dropDown 0.75s",
+        loadingSpin: "spin 1s linear infinite",
       },
       backgroundImage: {
         banner: "url('../public/images/matching/banner.png')",
