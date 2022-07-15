@@ -2,9 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+/* font setting */
+
+@font-face {
+  font-family: "Pacifio-regular";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Pacifio-regular"),
+    url(../public/fonts/Pacifico-Regular.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Boogaloo-regular";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Boogaloo-regular"),
+    url(../public/fonts/Boogaloo-Regular.ttf) format("truetype");
+}
+
 * {
   margin: 0px;
   padding: 0px;
+  font-family: "Boogaloo-regular";
 }
 
 .flip-card {

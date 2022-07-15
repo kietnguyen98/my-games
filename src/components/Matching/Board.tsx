@@ -137,7 +137,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
 
   const [userPoint, setUserPoint] = React.useState<number>(0);
 
-  const [isDone, setIsDone] = React.useState<boolean>(false);
+  const [isDone, setIsDone] = React.useState<boolean>(true);
 
   React.useEffect(() => {
     if (userPoint === Math.pow(boardSize, 2) / 2) {
@@ -269,13 +269,13 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
                   alt="timer"
                 ></img>
                 <div className="px-2 py-0 border-2 border-solid border-slate-600 rounded-lg bg-sky-200">
-                  <p className="text-sm text-bold text-slate-600 tracking-wider">
+                  <p className="text-md text-bold text-slate-600 tracking-wider">
                     {timerString}
                   </p>
                 </div>
               </div>
               <div className="flex justify-center">
-                <p className="text-md text-center text-slate-600">
+                <p className="text-xl text-center text-slate-600">
                   Your Point:{" "}
                   <span className="font-bold">
                     {userPoint} / {Math.pow(boardSize, 2) / 2}
@@ -286,7 +286,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
           )}
           {isDone ? (
             <div className="w-full flex justify-center flex-col items-center gap-8 sm:px-0 px-4">
-              <p className="text-2xl text-cyan-500 text-center font-bold uppercase">
+              <p className="text-3xl text-cyan-500 text-center font-bold uppercase">
                 Congratulations !, you have finished the game
               </p>
               <div className="w-full flex justify-center gap-1">
@@ -306,19 +306,19 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
                   alt="pepe congrate"
                 />
               </div>
-              <p className="text-lg text-cyan-700 text-center">
+              <p className="text-2xl text-cyan-700 text-center">
                 your playtime is {displayPlaytime(timerString)}
               </p>
               {!userSubmitSuccessfully ? (
                 isOnTop ? (
                   <div className="w-full flex flex-col gap-4 justify-center items-center px-8">
-                    <p className="text-slate-600 text-md text-center">
+                    <p className="text-slate-600 text-xl text-center">
                       Your score is enough to enter the top 5, please enter your
                       name to save it in the high score board !
                     </p>
                     <div className="flex gap-0 justify-center items-center">
                       <input
-                        className="text-md text-slate-600 px-4 py-1 bg-white border-solid border-2 border-slate-200 shadow-md rounded-tl-md rounded-bl-md"
+                        className="text-xl text-slate-600 px-4 py-1 bg-white border-solid border-2 border-slate-200 shadow-md rounded-tl-md rounded-bl-md"
                         type="text"
                         placeholder="Enter your name here"
                         value={userName}
@@ -326,7 +326,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
                       />
                       <button
                         onClick={userSubmitInfo}
-                        className="px-2 py-1 bg-amber-500 text-md text-slate-50 rounded-tr-md rounded-br-md border-solid border-2 border-slate-200 shadow-md"
+                        className="px-2 py-1 bg-amber-500 text-xl text-slate-50 rounded-tr-md rounded-br-md border-solid border-2 border-slate-200 shadow-md"
                       >
                         Submit
                       </button>
@@ -334,7 +334,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
                   </div>
                 ) : (
                   <div className="w-full flex justify-center items-center px-8">
-                    <p className="text-slate-600 text-md text-center">
+                    <p className="text-slate-600 text-xl text-center">
                       your score is not enough to get into top 5. Try playing
                       again
                     </p>
@@ -350,7 +350,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
               )}
             </div>
           ) : boardSize === 4 ? (
-            <div className="w-full h-full rounded-lg border-2 border-indigo-500/80 bg-indigo-100/80 grid grid-cols-4 gap-1 p-1">
+            <div className="w-full h-full rounded-lg border-4 border-amber-600/80 bg-amber-200/80 grid grid-cols-4 gap-1 p-1">
               {cardArray?.length > 0 &&
                 cardArray.map((key, index) => {
                   return (
@@ -369,7 +369,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
             </div>
           ) : (
             boardSize === 6 && (
-              <div className="w-full h-full rounded-lg border-2 border-indigo-500/80 bg-indigo-100/80 grid sm:grid-cols-6 grid-cols-4 gap-1 p-1">
+              <div className="w-full h-full rounded-lg border-4 border-amber-600/80 bg-amber-200/80 grid sm:grid-cols-6 grid-cols-4 gap-1 p-1">
                 {cardArray?.length > 0 &&
                   cardArray.map((key, index) => {
                     return (
