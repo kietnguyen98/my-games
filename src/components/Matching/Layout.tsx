@@ -5,6 +5,7 @@ import axios from "axios";
 // import modules from local
 import Board from "./Board";
 import Loading from "../Common/Loading";
+import CustomButton from "../Common/CustomButton";
 
 type matchingLayoutProps = {};
 
@@ -109,37 +110,31 @@ const MatchingLayout: FunctionComponent<matchingLayoutProps> = () => {
                 alt="pepe banner"
               />
             </div>
-            <div className="xl:w-1/3 lg:w-1/2 md:w-2/3 sm:w-3/4 w-5/6 bg-slate-50 shadow-md flex flex-col justify-center items-center gap-4 rounded-bl-md rounded-br-md md:p-8 p-4">
-              <p className="text-emerald-600 md:text-3xl text-xl text-center font-bold my-2 uppercase">
+            <div className="xl:w-1/3 lg:w-1/2 md:w-2/3 sm:w-3/4 w-5/6 bg-slate-50 shadow-md flex flex-col justify-center items-center gap-1 rounded-lg md:p-6 p-4">
+              <p className="text-emerald-600 md:text-2xl text-xl text-center font-bold my-2 uppercase">
                 Hello !, Welcome to the{" "}
-                <p className="tracking-wider">"Pepe Matching Game"</p>
+                <p className="tracking-wider md:text-3xl text-2xl">
+                  "Pepe Matching Game"
+                </p>
               </p>
-              <button
-                onClick={() => setIsHighScoreShow(true)}
-                className="relative w-full px-8 py-4 bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500 rounded-full shadow-lg my-2 animtaion-all duration-300 hover:animate-zoomInZoomOut flex items-center"
-              >
-                <img
-                  className="md:h-10 md:w-10 h-8 w-8 absolute left-4"
-                  src="/images/matching/pepe-typing.gif"
-                  alt="pepe pickles"
-                />
-                <p className="md:text-2xl text-xl text-slate-50 mr-auto ml-auto font-bold tracking-wide">
-                  See Leader Board
-                </p>
-              </button>
-              <button
-                onClick={() => setIsLevelModalShow(true)}
-                className="relative w-full my-2 px-8 py-4 bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-500 rounded-full animtaion-all duration-300 hover:animate-zoomInZoomOut shadow-lg flex items-center"
-              >
-                <img
-                  className="md:h-10 md:w-10 h-8 w-8 absolute left-4"
-                  src="/images/matching/pepe-pickles.gif"
-                  alt="pepe pickles"
-                />
-                <p className="md:text-2xl text-xl text-slate-50 mr-auto ml-auto font-bold tracking-wide">
-                  Let's do it baby !
-                </p>
-              </button>
+              <CustomButton
+                color="bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500"
+                clickFunction={() => setIsHighScoreShow(true)}
+                iconUrl="/images/matching/pepe-typing.gif"
+                text="See Leader Board"
+              />
+              <CustomButton
+                color="bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-500"
+                clickFunction={() => setIsLevelModalShow(true)}
+                iconUrl="/images/matching/pepe-pickles.gif"
+                text="Let's do it baby !"
+              />
+              <CustomButton
+                color="bg-gradient-to-r from-zinc-500 via-neutral-500 to-stone-500"
+                clickFunction={() => setIsLevelModalShow(true)}
+                iconUrl="/images/matching/pepe-go-bruh.gif"
+                text="Back to menu"
+              />
             </div>
           </React.Fragment>
         )}
@@ -173,7 +168,7 @@ const MatchingLayout: FunctionComponent<matchingLayoutProps> = () => {
       )}
       {isHighScoreShow && (
         <div className="fixed z-1 flex items-center justify-center left-0 top-0 w-full h-full overflow-auto bg-slate-900 bg-slate-900/60">
-          <div className="bg-slate-50 m-auto p-4 shadow-xl md:w-1/4 sm:w-1/2 w-3/4 rounded-md flex flex-col items-center justify-center gap-8 animate-dropDown">
+          <div className="bg-slate-50 m-auto p-4 shadow-xl xl:w-1/3 lg:w-1/2 md:w-2/3 sm:w-2/3 w-5/6 rounded-md flex flex-col items-center justify-center gap-8 animate-dropDown">
             <p className="md:text-2xl text-xl text-slate-600 font-bold text-center">
               Top 5 High Score
             </p>

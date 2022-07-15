@@ -137,7 +137,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
 
   const [userPoint, setUserPoint] = React.useState<number>(0);
 
-  const [isDone, setIsDone] = React.useState<boolean>(true);
+  const [isDone, setIsDone] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (userPoint === Math.pow(boardSize, 2) / 2) {
