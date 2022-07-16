@@ -18,14 +18,9 @@ function App() {
             directUrl="/pepe-matching"
           />
           <GameViewCard
-            gameName="pepe matching game"
-            gameViewImageUrl="bg-matching-view"
-            directUrl="/pepe-matching"
-          />
-          <GameViewCard
-            gameName="pepe matching game"
-            gameViewImageUrl="bg-matching-view"
-            directUrl="/pepe-matching"
+            gameName="pokemon slide puzzles game"
+            gameViewImageUrl="bg-slide-puzzles-view"
+            directUrl="/slide-puzzles"
           />
         </div>
       </div>

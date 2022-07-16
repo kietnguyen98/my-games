@@ -17,10 +17,10 @@ const CustomButton: FunctionComponent<customButtonProps> = ({
   return (
     <button
       onClick={clickFunction}
-      className={`relative w-full px-8 py-2 ${color} rounded-full shadow-lg my-2 animtaion-all duration-300 hover:animate-zoomInZoomOut flex items-center`}
+      className={`relative w-full px-8 py-2 ${color} rounded-full shadow-md my-2 animtaion-all duration-300 flex items-center`}
     >
       <img
-        className="h-8 w-8 absolute left-4"
+        className="sm:h-8 sm:w-8 h-6 w-6 absolute left-4"
         src={iconUrl}
         alt="button icon"
       />

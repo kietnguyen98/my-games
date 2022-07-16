@@ -22,15 +22,26 @@ module.exports = {
           "0%": { transform: "rotate(0deg)" },
           "100%": { transform: "rotate(360deg)" },
         },
+        slideIn: {
+          "100%": { transform: "translateX(0%)" },
+        },
+        slideOut: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(100%)" },
+        },
       },
       animation: {
         zoomInZoomOut: "zoomInZoomOut 1.5s ease-out infinite",
         dropDown: "dropDown 0.75s",
         loadingSpin: "spin 1s linear infinite",
+        slideIn: "slideIn 0.5s forwards",
+        slideOut: "slideOut 0.5s forwards",
       },
       backgroundImage: {
         banner: "url('../public/images/matching/banner.png')",
         "matching-view": "url('../../public/images/commons/pepe-matching.png')",
+        "slide-puzzles-view":
+          "url('../../public/images/commons/slide-puzzles.png')",
         "pepe-1": "url('../public/images/matching/001.png')",
         "pepe-2": "url('../public/images/matching/002.png')",
         "pepe-3": "url('../public/images/matching/003.png')",

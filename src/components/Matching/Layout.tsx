@@ -119,19 +119,19 @@ const MatchingLayout: FunctionComponent<matchingLayoutProps> = () => {
                 </p>
               </p>
               <CustomButton
-                color="bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500"
+                color="hover:animate-zoomInZoomOut bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500"
                 clickFunction={() => setIsHighScoreShow(true)}
                 iconUrl="/images/matching/pepe-typing.gif"
                 text="See Leader Board"
               />
               <CustomButton
-                color="bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-500"
+                color="hover:animate-zoomInZoomOut bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-500"
                 clickFunction={() => setIsLevelModalShow(true)}
                 iconUrl="/images/matching/pepe-pickles.gif"
                 text="Let's do it baby !"
               />
               <CustomButton
-                color="bg-gradient-to-r from-zinc-500 via-neutral-500 to-stone-500"
+                color="hover:animate-zoomInZoomOut bg-gradient-to-r from-zinc-500 via-neutral-500 to-stone-500"
                 clickFunction={() => navigate("/")}
                 iconUrl="/images/matching/pepe-go-bruh.gif"
                 text="Back to menu"
@@ -214,8 +214,13 @@ const MatchingLayout: FunctionComponent<matchingLayoutProps> = () => {
                         src="/images/matching/pepe-yewling.gif"
                         alt="pepe yewling"
                       />
-                      <p className="md:text-2xl text-xl text-slate-50">
-                        {user.userName + " - " + user.playTime}
+                      <p className="md:text-xl text-lg text-slate-50">
+                        {index +
+                          1 +
+                          ". " +
+                          user.userName +
+                          " - " +
+                          user.playTime}
                       </p>
                     </div>
                   );
