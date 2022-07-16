@@ -6,12 +6,13 @@ import axios from "axios";
 import Board from "./Board";
 import Loading from "../Common/Loading";
 import CustomButton from "../Common/CustomButton";
+import { useNavigate } from "react-router-dom";
 
 type matchingLayoutProps = {};
 
 const MatchingLayout: FunctionComponent<matchingLayoutProps> = () => {
   const [isPLay, setIsPlay] = React.useState(false);
-
+  const navigate = useNavigate();
   const playGame = (level: string) => {
     window.localStorage.setItem("matchingPlay", "yes");
     window.localStorage.setItem("level", level);
@@ -131,7 +132,7 @@ const MatchingLayout: FunctionComponent<matchingLayoutProps> = () => {
               />
               <CustomButton
                 color="bg-gradient-to-r from-zinc-500 via-neutral-500 to-stone-500"
-                clickFunction={() => setIsLevelModalShow(true)}
+                clickFunction={() => navigate("/")}
                 iconUrl="/images/matching/pepe-go-bruh.gif"
                 text="Back to menu"
               />

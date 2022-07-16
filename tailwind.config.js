@@ -6,7 +6,7 @@ module.exports = {
       keyframes: {
         zoomInZoomOut: {
           "0%, 100%": { transform: "scale(1, 1)" },
-          "50%": { transform: "scale(1.3, 1.3)" },
+          "50%": { transform: "scale(1.2, 1.2)" },
         },
         dropDown: {
           from: {
@@ -30,6 +30,7 @@ module.exports = {
       },
       backgroundImage: {
         banner: "url('../public/images/matching/banner.png')",
+        "matching-view": "url('../../public/images/commons/pepe-matching.png')",
         "pepe-1": "url('../public/images/matching/001.png')",
         "pepe-2": "url('../public/images/matching/002.png')",
         "pepe-3": "url('../public/images/matching/003.png')",

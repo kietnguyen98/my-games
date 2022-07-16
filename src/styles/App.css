@@ -10,7 +10,7 @@
   font-weight: 400;
   font-display: swap;
   src: local("Pacifio-regular"),
-    url(../public/fonts/Pacifico-Regular.ttf) format("truetype");
+    url(../../public/fonts/Pacifico-Regular.ttf) format("truetype");
 }
 
 @font-face {
@@ -19,7 +19,7 @@
   font-weight: 400;
   font-display: swap;
   src: local("Boogaloo-regular"),
-    url(../public/fonts/Boogaloo-Regular.ttf) format("truetype");
+    url(../../public/fonts/Boogaloo-Regular.ttf) format("truetype");
 }
 
 * {
