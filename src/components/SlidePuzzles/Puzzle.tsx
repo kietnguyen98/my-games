@@ -1,5 +1,6 @@
 // import modules from library
 import React, { FunctionComponent } from "react";
+import { useMediaQuery } from "react-responsive";
 
 // import modules from local
 
@@ -13,9 +14,6 @@ type puzzleProps = {
   movePuzzle: any;
 };
 
-const canvasHeight: number = 100;
-const canvasWidth: number = 100;
-
 const Puzzle: FunctionComponent<puzzleProps> = ({
   index,
   imgSource,
@@ -25,6 +23,13 @@ const Puzzle: FunctionComponent<puzzleProps> = ({
   endWidth,
   movePuzzle,
 }) => {
+  const isMobile = useMediaQuery({
+    query: "(max-width: 420px)",
+  });
+
+  const canvasHeight: number = isMobile ? 75 : 100;
+  const canvasWidth: number = isMobile ? 75 : 100;
+
   const drawImage = (imgSource: string, index: number) => {
     var theCanvas: any = document.getElementById(`canvas-${index}`);
     if (index === 15) {
@@ -33,7 +38,13 @@ const Puzzle: FunctionComponent<puzzleProps> = ({
       let ctx = theCanvas.getContext("2d");
       let img = new Image();
       img.onload = async function () {
-        await ctx.drawImage(img, 10, 10, 80, 80);
+        await ctx.drawImage(
+          img,
+          10,
+          10,
+          isMobile ? 55 : 80,
+          isMobile ? 55 : 80
+        );
       };
       img.src = "/images/slide-puzzles/pokeball.png";
     } else {

@@ -1,5 +1,6 @@
 // import modules from library
 import React, { FunctionComponent, ReactElement } from "react";
+import { useMediaQuery } from "react-responsive";
 
 // import modules from local
 import Clock from "../Common/Clock";
@@ -8,13 +9,17 @@ import AnnoucementModal from "../Common/AnnoucementModal";
 
 type slidePuzzlesBoardProps = {};
 
-const imageList = ["", "bulbasaur", "charmander", "squirtle"];
-const cols: number = 4;
-const rows: number = 4;
-const canvasHeight: number = 100;
-const canvasWidth: number = 100;
-
 const SlidePuzzlesBoard: FunctionComponent<slidePuzzlesBoardProps> = () => {
+  const isMobile = useMediaQuery({
+    query: "(max-width: 420px)",
+  });
+
+  const imageList = ["", "bulbasaur", "charmander", "squirtle"];
+  const cols: number = 4;
+  const rows: number = 4;
+  const canvasHeight: number = isMobile ? 75 : 100;
+  const canvasWidth: number = isMobile ? 75 : 100;
+
   const [isDone, setIsDone] = React.useState(false);
   const [imgIndex, setImgIndex] = React.useState<number>();
   const [puzzlesArray, setPuzzlesArray] = React.useState<Array<ReactElement>>(
@@ -53,7 +58,9 @@ const SlidePuzzlesBoard: FunctionComponent<slidePuzzlesBoardProps> = () => {
   };
 
   const renderPuzzles = (imgIndex: number) => {
-    var imageSrc = `/images/slide-puzzles/${imageList[imgIndex]}.png`;
+    var imageSrc = `/images/slide-puzzles/${imageList[imgIndex]}${
+      isMobile ? "-mobile" : ""
+    }.png`;
     var index = 0;
     var tempPuzzlesArray: Array<ReactElement> = [];
     setPuzzlesArray([]);
@@ -67,8 +74,8 @@ const SlidePuzzlesBoard: FunctionComponent<slidePuzzlesBoardProps> = () => {
             imgSource={imageSrc}
             startHeight={i * canvasHeight}
             startWidth={j * canvasWidth}
-            endHeight={i * canvasHeight + 100}
-            endWidth={j * canvasWidth + 100}
+            endHeight={i * canvasHeight + canvasHeight}
+            endWidth={j * canvasWidth + canvasWidth}
           />
         );
         index++;
@@ -196,7 +203,7 @@ const SlidePuzzlesBoard: FunctionComponent<slidePuzzlesBoardProps> = () => {
   return (
     <React.Fragment>
       <div className="w-full flex flex-col items-center justify-center gap-8">
-        <div className="flex justify-center items-center gap-8">
+        <div className="flex sm:flex-row flex-col justify-center items-center sm:gap-8 gap-6">
           <Clock isDone={isDone} isStart={!isIntroModalOpen} />
           <button
             onClick={() => setIsRefModalOpen(true)}
