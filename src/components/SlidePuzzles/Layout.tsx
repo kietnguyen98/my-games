@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 // import modules from library
 import React, { FunctionComponent } from "react";
 import ButtonCarousel from "./ButtonCarousel";
