@@ -119,19 +119,19 @@ const MatchingLayout: FunctionComponent<matchingLayoutProps> = () => {
                 </p>
               </p>
               <CustomButton
-                color="hover:animate-zoomInZoomOut bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500"
+                color="hover:animate-zoomInZoomOut bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500 shadow-amber-300/80"
                 clickFunction={() => setIsHighScoreShow(true)}
                 iconUrl="/images/matching/pepe-typing.gif"
                 text="See Leader Board"
               />
               <CustomButton
-                color="hover:animate-zoomInZoomOut bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-500"
+                color="hover:animate-zoomInZoomOut bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-500 shadow-sky-300/80"
                 clickFunction={() => setIsLevelModalShow(true)}
                 iconUrl="/images/matching/pepe-pickles.gif"
                 text="Let's do it baby !"
               />
               <CustomButton
-                color="hover:animate-zoomInZoomOut bg-gradient-to-r from-zinc-500 via-neutral-500 to-stone-500"
+                color="hover:animate-zoomInZoomOut bg-gradient-to-r from-zinc-500 via-neutral-500 to-stone-500 shadow-neutral-300/80"
                 clickFunction={() => navigate("/")}
                 iconUrl="/images/matching/pepe-go-bruh.gif"
                 text="Back to menu"

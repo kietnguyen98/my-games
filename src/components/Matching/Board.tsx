@@ -151,7 +151,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
 
   //   const [seconds, setSeconds] = React.useState(0)
 
-  const [timerString, setTimerString] = React.useState<string>("00:00:15");
+  const [timerString, setTimerString] = React.useState<string>("00:00:00");
 
   React.useEffect(() => {
     var second = 0;

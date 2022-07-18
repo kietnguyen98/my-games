@@ -1,17 +1,18 @@
 // import modules from library
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, ReactElement } from "react";
 import { Swiper, useSwiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper";
 import "swiper/css";
 
 // import modules from local
-import CustomButton from "../Common/CustomButton";
-import { useNavigate } from "react-router-dom";
 
-type buttonCarouselProps = {};
+type buttonCarouselProps = {
+  listComponent: Array<ReactElement>;
+};
 
-const ButtonCarousel: FunctionComponent<buttonCarouselProps> = () => {
-  const navigate = useNavigate();
+const ButtonCarousel: FunctionComponent<buttonCarouselProps> = ({
+  listComponent,
+}) => {
   const prevButtonRef = React.useRef<HTMLButtonElement>(null);
   const nextButtonRef = React.useRef<HTMLButtonElement>(null);
 
@@ -79,37 +80,15 @@ const ButtonCarousel: FunctionComponent<buttonCarouselProps> = () => {
           modules={[Navigation]}
           spaceBetween={25}
           slidesPerView={1}
-          navigation
+          loop={true}
+          navigation={true}
         >
           <RefPrevButton />
           <RefNextButton />
-          <SwiperSlide>
-            {" "}
-            <CustomButton
-              color="bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500"
-              clickFunction={() => alert("cc")}
-              iconUrl="/images/slide-puzzles/pikachu-icon.png"
-              text="start the game"
-            />
-          </SwiperSlide>
-          <SwiperSlide>
-            {" "}
-            <CustomButton
-              color="bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-500"
-              clickFunction={() => alert("cc")}
-              iconUrl="/images/slide-puzzles/pikachu-icon.png"
-              text="see leader board"
-            />
-          </SwiperSlide>
-          <SwiperSlide>
-            {" "}
-            <CustomButton
-              color="bg-gradient-to-r from-zinc-500 via-neutral-500 to-stone-500"
-              clickFunction={() => navigate("/")}
-              iconUrl="/images/slide-puzzles/pikachu-icon.png"
-              text="back to menu"
-            />
-          </SwiperSlide>
+          {listComponent?.length > 0 &&
+            listComponent.map((comp, index) => {
+              return <SwiperSlide key={index + 1}>{comp}</SwiperSlide>;
+            })}
         </Swiper>
       </div>
       <ButtonNext />
