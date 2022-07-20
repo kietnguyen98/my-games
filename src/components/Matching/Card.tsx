@@ -59,25 +59,25 @@ const Card: FunctionComponent<cardProps> = ({
             w-16
             h-16
             rounded-sm cursor-pointer transition-all duration-300 ` +
-            (isClear && "bg-amber-200/80 shadow-none")
+            (isClear && "bg-cyan-200/80 shadow-none")
           }
         >
           {isClear ? (
-            <div className="w-full h-full bg-amber-200/80"></div>
+            <div className="w-full h-full bg-cyan-200/80"></div>
           ) : (
             <div
               className={
                 isShow ? "flip-card-inner card-flip" : "flip-card-inner"
               }
             >
-              <div className="flip-card-front h-full w-full shadow-md bg-gradient-to-b from-zinc-900 via-neutral-900 to-stone-900 p-3">
+              <div className="flip-card-front h-full w-full shadow-sm">
                 <img
                   className="w-full h-full"
-                  src="/images/matching/pepe-sad-white.png"
+                  src="/images/matching/card-back.webp"
                   alt="pepe sad"
                 />
               </div>
-              <div className="flip-card-back h-full w-full shadow-sm">
+              <div className="flip-card-back h-full w-full shadow-sm bg-slate-50">
                 <img
                   className="w-full h-full"
                   src={`images/matching/${imgIndex}.png`}

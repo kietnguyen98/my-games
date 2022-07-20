@@ -22,12 +22,7 @@ const SlidePuzzlesLayout: FunctionComponent<slidePuzzlesLayoutProps> = () => {
     <div className="min-h-screen w-full bg-gradient-to-r from-lime-100 via-green-200 to-teal-200 flex justify-center items-center">
       {isPlay ? (
         <div className="w-full flex items-center justify-center flex-col gap-10 sm:py-0 py-8">
-          <p className="text-slate-600 text-2xl text-center font-bold">
-            Playing Slide Puzzles Game...
-          </p>
-          <div>
-            <SlidePuzzlesBoard />
-          </div>
+          <SlidePuzzlesBoard />
           <div>
             <button
               onClick={getBack}

@@ -6,6 +6,7 @@ import { useMediaQuery } from "react-responsive";
 import Clock from "../Common/Clock";
 import Puzzle from "./Puzzle";
 import AnnoucementModal from "../Common/AnnoucementModal";
+import { displayPlayTime } from "../../utils/custom-functions";
 
 type slidePuzzlesBoardProps = {};
 
@@ -48,10 +49,10 @@ const SlidePuzzlesBoard: FunctionComponent<slidePuzzlesBoardProps> = () => {
 
   const shuffleArrayPuzzles = (arrayPuzzles: Array<ReactElement>) => {
     let tempPuzzlesArray: Array<ReactElement> = arrayPuzzles;
-
-    for (let i = 0; i < arrayPuzzles.length; i++) {
-      var firstIndex: number = Math.floor(Math.random() * 16);
-      var secondIndex: number = Math.floor(Math.random() * 16);
+    // using fihser-yates algorithm here
+    for (let i = arrayPuzzles.length - 2; i > 0; i--) {
+      var firstIndex: number = i;
+      var secondIndex: number = Math.floor(Math.random() * (i + 1));
       swapElementsInArray(tempPuzzlesArray, firstIndex, secondIndex);
     }
     setPuzzlesArray(tempPuzzlesArray);
@@ -186,8 +187,8 @@ const SlidePuzzlesBoard: FunctionComponent<slidePuzzlesBoardProps> = () => {
         }
       }
       if (isFinished) {
-        setIsDone(true);
         setTimeout(() => {
+          setIsDone(true);
           setAnnoucementContent(
             "congratulations !, you have finished the game !"
           );
@@ -199,26 +200,56 @@ const SlidePuzzlesBoard: FunctionComponent<slidePuzzlesBoardProps> = () => {
   const [isRefModalOpen, setIsRefModalOpen] = React.useState(false);
   const [isIntroModalOpen, setIsIntroModalOpen] = React.useState(true);
   const [annoucementContent, setAnnoucementContent] = React.useState("");
+  const [timeString, setTimeString] = React.useState("00:00:00");
+  const updateTimeString = (value: string) => {
+    setTimeString(value);
+  };
 
   return (
     <React.Fragment>
-      <div className="w-full flex flex-col items-center justify-center gap-8">
-        <div className="flex sm:flex-row flex-col justify-center items-center sm:gap-8 gap-6">
-          <Clock isDone={isDone} isStart={!isIntroModalOpen} />
-          <button
-            onClick={() => setIsRefModalOpen(true)}
-            className="px-8 py-1 bg-gradient-to-r from-cyan-500 to-violet-500 hover:from-cyan-400 hover:to-violet-400 text-slate-50 text-xl text-center cursor-pointer rounded-lg transition-all duration-500 shadow-md hover:shadow-lg"
-          >
-            See Reference
-          </button>
-        </div>
-        <div className="h-fit w-fit border-4 border-solid border-fuchsia-500/50 ring-2 ring-violet-500/50 ring-offset-4 ring-offset-fuchsia-100/50 rounded-lg shadow-xl shadow-fuchsia-500/50 bg-slate-200">
-          <div className="w-fit h-fit grid grid-cols-4 gap-0.5 bg-slate-900/80">
-            {puzzlesArray?.length > 0 &&
-              puzzlesArray.map((puzzle, index) => puzzle)}
+      {isDone ? (
+        <div className="w-5/6">
+          <div className="flex flex-col gap-8 justify-center items-center">
+            <p className="text-green-600 text-3xl text-center font-bold">
+              Congratulations !!!, you have finished the game
+            </p>
+            <div className="w-full flex justify-center items-center">
+              <img
+                src="/images/slide-puzzles/pokemon-congratulations.gif"
+                alt="pokemon congratulations"
+              />
+            </div>
+            <p className="text-sky-600 text-3xl text-center font-bold">
+              Your play time is: {displayPlayTime(timeString)}
+            </p>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="w-full flex flex-col items-center justify-center gap-8">
+          <p className="text-slate-600 text-2xl text-center font-bold">
+            Playing Slide Puzzles Game...
+          </p>
+          <div className="flex sm:flex-row flex-col justify-center items-center sm:gap-8 gap-6">
+            <Clock
+              isDone={isDone}
+              isStart={!isIntroModalOpen}
+              getTimeString={updateTimeString}
+            />
+            <button
+              onClick={() => setIsRefModalOpen(true)}
+              className="px-8 py-1 bg-gradient-to-r from-cyan-500 to-violet-500 hover:from-cyan-400 hover:to-violet-400 text-slate-50 text-xl text-center cursor-pointer rounded-lg transition-all duration-500 shadow-md hover:shadow-lg"
+            >
+              See Reference
+            </button>
+          </div>
+          <div className="h-fit w-fit border-4 border-solid border-fuchsia-500/50 ring-2 ring-violet-500/50 ring-offset-4 ring-offset-fuchsia-100/50 rounded-lg shadow-xl shadow-fuchsia-500/50 bg-slate-200">
+            <div className="w-fit h-fit grid grid-cols-4 gap-0.5 bg-slate-900/80">
+              {puzzlesArray?.length > 0 &&
+                puzzlesArray.map((puzzle, index) => puzzle)}
+            </div>
+          </div>
+        </div>
+      )}
       {isRefModalOpen && (
         <div className="fixed z-1 flex items-center justify-center left-0 top-0 w-full h-full overflow-auto bg-slate-900 bg-slate-900/70">
           <div className="bg-slate-50 m-auto p-4 shadow-xl xl:w-1/4 lg:w-1/3 md:w-1/3 sm:w-1/2 w-3/4 rounded-md flex flex-col items-center justify-center gap-8 animate-dropDown">

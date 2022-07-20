@@ -5,6 +5,8 @@ import axios from "axios";
 import Card from "./Card";
 import Loading from "../Common/Loading";
 import AnnoucementModal from "../Common/AnnoucementModal";
+import Clock from "../Common/Clock";
+import { displayPlayTime } from "../../utils/custom-functions";
 
 type boardProps = {
   gameEnd: any;
@@ -149,53 +151,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userPoint]);
 
-  //   const [seconds, setSeconds] = React.useState(0)
-
   const [timerString, setTimerString] = React.useState<string>("00:00:00");
-
-  React.useEffect(() => {
-    var second = 0;
-    const getTimeString = (time: number) => {
-      let valString: string = time.toString();
-      if (valString.length < 2) {
-        valString = "0" + valString;
-      }
-      return valString;
-    };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-
-    let interval = window.setInterval(() => {
-      second = second + 1;
-      let secondsString = getTimeString(second % 60);
-      let minutesString = getTimeString(Math.floor(second / 60));
-      let hoursString = getTimeString(Math.floor(second / 3600));
-      setTimerString(hoursString + ":" + minutesString + ":" + secondsString);
-    }, 1000);
-
-    if (isDone) {
-      window.clearInterval(interval);
-    }
-
-    return () => {
-      window.clearInterval(interval);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDone]);
-
-  const displayPlaytime = (timeString: string) => {
-    var seconds = timeString.substring(6, 8);
-    var minutes = timeString.substring(3, 5);
-    var hours = timeString.substring(0, 2);
-    var secondsStr: string = "";
-    var minutesStr: string = "";
-    var hoursStr: string = "";
-    if (parseInt(seconds) > 0) secondsStr = seconds + "(s)";
-    if (parseInt(minutes) > 0) minutesStr = minutes + "(m) ";
-    if (parseInt(hours) > 0) hoursStr = hours + "(h) ";
-
-    return hoursStr + minutesStr + secondsStr;
-  };
 
   // user submit to highscore board
   const [userName, setUserName] = React.useState("");
@@ -259,30 +215,23 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
       {isLoading ? (
         <Loading />
       ) : (
-        <div className="w-full flex flex-col md:gap-1 gap-2 items-center justify-center">
+        <div className="w-full flex flex-col gap-4 items-center justify-center">
           {!isDone && (
-            <React.Fragment>
-              <div className="flex justify-center items-center gap-2">
-                <img
-                  className="h-6 w-6"
-                  src="images/matching/timer.png"
-                  alt="timer"
-                ></img>
-                <div className="px-2 py-0 border-2 border-solid border-slate-600 rounded-lg bg-sky-200">
-                  <p className="text-md text-bold text-slate-600 tracking-wider">
-                    {timerString}
-                  </p>
-                </div>
-              </div>
-              <div className="flex justify-center">
+            <div className="flex sm:flex-row flex-col justify-center items-center gap-8">
+              <Clock
+                isDone={isDone}
+                isStart={true}
+                getTimeString={(val: string) => setTimerString(val)}
+              />
+              <div className="flex justify-center border-solid border-4 border-cyan-500 px-4 py-0 rounded-full bg-slate-50">
                 <p className="text-xl text-center text-slate-600">
                   Your Point:{" "}
-                  <span className="font-bold">
+                  <span className="font-bold text-sky-500">
                     {userPoint} / {Math.pow(boardSize, 2) / 2}
                   </span>
                 </p>
               </div>
-            </React.Fragment>
+            </div>
           )}
           {isDone ? (
             <div className="w-full flex justify-center flex-col items-center gap-8 sm:px-0 px-4">
@@ -307,7 +256,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
                 />
               </div>
               <p className="text-2xl text-cyan-700 text-center">
-                your playtime is {displayPlaytime(timerString)}
+                your playtime is {displayPlayTime(timerString)}
               </p>
               {!userSubmitSuccessfully ? (
                 isOnTop ? (
@@ -350,7 +299,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
               )}
             </div>
           ) : boardSize === 4 ? (
-            <div className="w-full h-full rounded-lg border-4 border-amber-600/80 bg-amber-200/80 grid grid-cols-4 gap-1 p-1">
+            <div className="w-fit h-fit rounded-lg border-4 border-cyan-500 bg-cyan-200/80 grid grid-cols-4 gap-0.5 p-1 shadow-lg shadow-teal-500/50">
               {cardArray?.length > 0 &&
                 cardArray.map((key, index) => {
                   return (
@@ -369,7 +318,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
             </div>
           ) : (
             boardSize === 6 && (
-              <div className="w-full h-full rounded-lg border-4 border-amber-600/80 bg-amber-200/80 grid sm:grid-cols-6 grid-cols-4 gap-1 p-1">
+              <div className="w-fit h-fit rounded-lg border-4 border-cyan-500 bg-cyan-200/80 grid sm:grid-cols-6 grid-cols-4 gap-0.5 p-1 shadow-lg shadow-teal-500/50">
                 {cardArray?.length > 0 &&
                   cardArray.map((key, index) => {
                     return (

@@ -6,9 +6,14 @@ import React, { FunctionComponent } from "react";
 type clockProps = {
   isDone: boolean;
   isStart: boolean;
+  getTimeString: any;
 };
 
-const Clock: FunctionComponent<clockProps> = ({ isDone, isStart }) => {
+const Clock: FunctionComponent<clockProps> = ({
+  isDone,
+  isStart,
+  getTimeString,
+}) => {
   const [timerString, setTimerString] = React.useState<string>("00:00:00");
 
   React.useEffect(() => {
@@ -42,6 +47,11 @@ const Clock: FunctionComponent<clockProps> = ({ isDone, isStart }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDone, isStart]);
+
+  React.useEffect(() => {
+    getTimeString(timerString);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timerString]);
 
   return (
     <div className="relative w-fit">
