@@ -1,21 +1,21 @@
-const userModel = require("../models/user.model");
+const matchingModel = require("../models/matching.model");
 
-const userServices = {};
-userServices.getCreateUser = async (request, response) => {
+const matchingServices = {};
+matchingServices.createMatchingHighScore = async (request, response) => {
   const userName = request.body.userName;
   const playMode = request.body.playMode;
   const playTime = request.body.playTime;
 
   if (userName && playMode && playTime) {
-    const user = new userModel({
+    const matchingHighScore = new matchingModel({
       userName,
       playMode,
       playTime,
     });
 
     try {
-      await user.save();
-      response.json(user);
+      await matchingHighScore.save();
+      response.json(matchingHighScore);
     } catch (error) {
       console.log(error);
       response.status(400).send(error);
@@ -25,18 +25,18 @@ userServices.getCreateUser = async (request, response) => {
   }
 };
 
-userServices.getListUser = async (request, response) => {
+matchingServices.getListMatchingHighScore = async (request, response) => {
   const playMode = request.query.playMode;
-  const users = await userModel
+  const listMatchingHighScore = await matchingModel
     .find({ playMode: playMode })
     .sort({ playTime: 1 })
     .limit(5);
 
   try {
-    response.json(users);
+    response.json(listMatchingHighScore);
   } catch (error) {
     response.status(500).send(error);
   }
 };
 
-module.exports = userServices;
+module.exports = matchingServices;

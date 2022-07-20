@@ -6,7 +6,9 @@ import Card from "./Card";
 import Loading from "../Common/Loading";
 import AnnoucementModal from "../Common/AnnoucementModal";
 import Clock from "../Common/Clock";
-import { displayPlayTime } from "../../utils/custom-functions";
+import { displayPlayTime } from "../../utils/customFunctions";
+import AlertModal from "../Common/AlertModal";
+import apiRoutes from "../../utils/apiRoutes";
 
 type boardProps = {
   gameEnd: any;
@@ -27,7 +29,8 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
 
       const getListHighScore = async (playMode: string) => {
         const result = await axios.get(
-          process.env.REACT_APP_DEPLOY_API_ENDPOINT + "/users/users",
+          process.env.REACT_APP_DEPLOY_API_ENDPOINT +
+            apiRoutes.GET_ALL_MATCHING_HIGH_SCORE,
           {
             params: {
               playMode: playMode,
@@ -38,7 +41,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
         const listHighScore = result?.data;
         if (listHighScore.length === 5) {
           for (let i = 0; i < listHighScore.length; i++) {
-            if (timerString.localeCompare(listHighScore[i].playTime) < 0) {
+            if (timeString.localeCompare(listHighScore[i].playTime) < 0) {
               setIsOnTop(true);
               return setIsLoading(false);
             }
@@ -62,9 +65,9 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
   const [resultArray, setResultArray] = React.useState<Array<number>>([]);
 
   React.useMemo(() => {
-    const shuffleArray: (array: Array<number>) => Array<number> = function (
+    const shuffleArray: (array: Array<number>) => Array<number> = (
       array: Array<number>
-    ): Array<number> {
+    ): Array<number> => {
       var currentIndex = array.length;
       var randomIndex;
 
@@ -151,22 +154,25 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userPoint]);
 
-  const [timerString, setTimerString] = React.useState<string>("00:00:00");
+  const [timeString, setTimeString] = React.useState<string>("00:00:00");
 
   // user submit to highscore board
   const [userName, setUserName] = React.useState("");
   const [userSubmitSuccessfully, setUserSubmitSuccessfully] =
     React.useState(false);
   const [alertModalContent, setAlertModalContent] = React.useState("");
+  const [annoucementModalContent, setAnnoucementModalContent] =
+    React.useState("");
 
   const userSubmitInfo = () => {
     if (!userName) {
-      alert("You haven't enter your name yet ");
+      return setAlertModalContent("You haven't enter your name yet ");
     } else {
       const createNewUser = async (userName: string) => {
         setIsLoading(true);
         const highScoreResult = await axios.get(
-          process.env.REACT_APP_DEPLOY_API_ENDPOINT + "/users/users",
+          process.env.REACT_APP_DEPLOY_API_ENDPOINT +
+            apiRoutes.GET_ALL_MATCHING_HIGH_SCORE,
           {
             params: {
               playMode: window.localStorage.getItem("level"),
@@ -187,18 +193,21 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
         }
 
         const result = await axios.post(
-          process.env.REACT_APP_DEPLOY_API_ENDPOINT + "/users/add-user",
+          process.env.REACT_APP_DEPLOY_API_ENDPOINT +
+            apiRoutes.ADD_MATCHING_HIGH_SCORE,
           {
             userName: userName,
             playMode: window.localStorage.getItem("level"),
-            playTime: timerString,
+            playTime: timeString,
           }
         );
         if (result?.status === 200) {
           setUserName("");
           setUserSubmitSuccessfully(true);
           setIsLoading(false);
-          return setAlertModalContent("Submit information successfully !");
+          return setAnnoucementModalContent(
+            "Submit information successfully !"
+          );
         } else {
           setUserName("");
           setIsLoading(false);
@@ -221,7 +230,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
               <Clock
                 isDone={isDone}
                 isStart={true}
-                getTimeString={(val: string) => setTimerString(val)}
+                getTimeString={(val: string) => setTimeString(val)}
               />
               <div className="flex justify-center border-solid border-4 border-cyan-500 px-4 py-0 rounded-full bg-slate-50">
                 <p className="text-xl text-center text-slate-600">
@@ -234,8 +243,8 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
             </div>
           )}
           {isDone ? (
-            <div className="w-full flex justify-center flex-col items-center gap-8 sm:px-0 px-4">
-              <p className="text-3xl text-cyan-500 text-center font-bold uppercase">
+            <div className="w-full flex justify-center flex-col items-center gap-8 sm:px-8 px-4">
+              <p className="sm:text-3xl text-2xl text-cyan-500 text-center font-bold uppercase max-w-5/6">
                 Congratulations !, you have finished the game
               </p>
               <div className="w-full flex justify-center gap-1">
@@ -256,18 +265,18 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
                 />
               </div>
               <p className="text-2xl text-cyan-700 text-center">
-                your playtime is {displayPlayTime(timerString)}
+                your playtime is {displayPlayTime(timeString)}
               </p>
               {!userSubmitSuccessfully ? (
                 isOnTop ? (
-                  <div className="w-full flex flex-col gap-4 justify-center items-center px-8">
-                    <p className="text-slate-600 text-xl text-center">
+                  <div className="w-full flex flex-col gap-8 justify-center items-center px-8">
+                    <p className="text-slate-600 text-2xl text-center">
                       Your score is enough to enter the top 5, please enter your
                       name to save it in the high score board !
                     </p>
                     <div className="flex gap-0 justify-center items-center">
                       <input
-                        className="text-xl text-slate-600 px-4 py-1 bg-white border-solid border-2 border-slate-200 shadow-md rounded-tl-md rounded-bl-md"
+                        className="text-2xl text-slate-600 px-4 py-1 bg-white border-solid border-2 border-slate-200 shadow-md rounded-tl-md rounded-bl-md"
                         type="text"
                         placeholder="Enter your name here"
                         value={userName}
@@ -275,7 +284,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
                       />
                       <button
                         onClick={userSubmitInfo}
-                        className="px-2 py-1 bg-amber-500 text-xl text-slate-50 rounded-tr-md rounded-br-md border-solid border-2 border-slate-200 shadow-md"
+                        className="px-4 py-1.5 h-full bg-amber-500 text-xl text-slate-50 rounded-tr-md rounded-br-md border-solid border-2 border-slate-200 shadow-md"
                       >
                         Submit
                       </button>
@@ -291,7 +300,7 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
                 )
               ) : (
                 <div className="w-full flex justify-center items-center px-8">
-                  <p className="text-sky-600 text-lg font-bold text-center">
+                  <p className="text-slate-600 text-2xl text-center">
                     You have successfully submitted the information ! let's keep
                     playing the game
                   </p>
@@ -341,8 +350,14 @@ const Board: FunctionComponent<boardProps> = ({ gameEnd }) => {
           )}
         </div>
       )}
-      {alertModalContent && (
+      {annoucementModalContent && (
         <AnnoucementModal
+          content={annoucementModalContent}
+          closeModal={() => setAnnoucementModalContent("")}
+        />
+      )}
+      {alertModalContent && (
+        <AlertModal
           content={alertModalContent}
           closeModal={() => setAlertModalContent("")}
         />

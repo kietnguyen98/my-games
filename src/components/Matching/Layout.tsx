@@ -7,6 +7,7 @@ import Board from "./Board";
 import Loading from "../Common/Loading";
 import CustomButton from "../Common/CustomButton";
 import { useNavigate } from "react-router-dom";
+import apiRoutes from "../../utils/apiRoutes";
 
 type matchingLayoutProps = {};
 
@@ -55,7 +56,8 @@ const MatchingLayout: FunctionComponent<matchingLayoutProps> = () => {
       const getListHighScore = async () => {
         setIsLoading(true);
         const result = await axios.get(
-          process.env.REACT_APP_DEPLOY_API_ENDPOINT + "/users/users",
+          process.env.REACT_APP_DEPLOY_API_ENDPOINT +
+            apiRoutes.GET_ALL_MATCHING_HIGH_SCORE,
           {
             params: {
               playMode: highScoreMode,
@@ -76,31 +78,54 @@ const MatchingLayout: FunctionComponent<matchingLayoutProps> = () => {
     }
   }, [highScoreMode]);
 
+  React.useEffect(() => {
+    if (isHighScoreShow && highScoreMode) {
+      const getListHighScore = async () => {
+        setIsLoading(true);
+        const result = await axios.get(
+          process.env.REACT_APP_DEPLOY_API_ENDPOINT +
+            apiRoutes.GET_ALL_MATCHING_HIGH_SCORE,
+          {
+            params: {
+              playMode: highScoreMode,
+            },
+          }
+        );
+        if (result?.data?.length > 0) {
+          setListHighScore(
+            result?.data?.filter((data: any) => data.playMode === highScoreMode)
+          );
+          setIsLoading(false);
+        } else {
+          setListHighScore([]);
+          setIsLoading(false);
+        }
+      };
+      getListHighScore();
+    }
+  }, [isHighScoreShow, highScoreMode]);
+
   return (
     <div className="bg-gradient-to-r from-purple-200 via-fuchsia-200 to-pink-200">
       <div className="sm:h-screen min-h-screen sm:py-0 py-8  w-full flex items-center justify-center flex-col">
         {isPLay ? (
-          <div className="w-full flex items-center justify-center flex-col gap-4">
+          <div className="w-full flex items-center justify-center flex-col md:gap-4 sm:gap-8 gap-12">
             {isGameEnd ? null : (
               <p className="text-slate-600 xl:text-2xl md:text-xl text-xl text-center font-bold">
                 Playing Matching Game ...
               </p>
             )}
-            <div>
-              <Board
-                gameEnd={() => {
-                  setIsGameEnd(true);
-                }}
-              />
-            </div>
-            <div>
-              <button
-                onClick={getBack}
-                className="px-8 py-2 bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-500 text-slate-50 rounded-md shadow-lg md:text-2xl text-xl"
-              >
-                Get back
-              </button>
-            </div>
+            <Board
+              gameEnd={() => {
+                setIsGameEnd(true);
+              }}
+            />
+            <button
+              onClick={getBack}
+              className="px-8 py-2 bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-500 text-slate-50 rounded-md shadow-md hover:shadow-xl hover:shadow-blue-300/80 md:text-2xl text-xl transition-all duration-300"
+            >
+              Get back
+            </button>
           </div>
         ) : (
           <React.Fragment>
@@ -141,7 +166,7 @@ const MatchingLayout: FunctionComponent<matchingLayoutProps> = () => {
         )}
       </div>
       {isLevelModalShow && (
-        <div className="fixed z-1 flex items-center justify-center left-0 top-0 w-full h-full overflow-auto bg-slate-900 bg-slate-900/60">
+        <div className="fixed z-1 flex items-center justify-center left-0 top-0 w-full h-full overflow-auto bg-slate-900 bg-slate-900/70">
           <div className="bg-slate-50 m-auto p-4 shadow-xl md:w-1/4 sm:w-1/2 w-3/4 rounded-md flex flex-col items-center justify-center gap-8 animate-dropDown">
             <p className="md:text-2xl text-xl text-slate-600 font-bold text-center">
               Choose the level you want to play
@@ -168,7 +193,7 @@ const MatchingLayout: FunctionComponent<matchingLayoutProps> = () => {
         </div>
       )}
       {isHighScoreShow && (
-        <div className="fixed z-1 flex items-center justify-center left-0 top-0 w-full h-full overflow-auto bg-slate-900 bg-slate-900/60">
+        <div className="fixed z-1 flex items-center justify-center left-0 top-0 w-full h-full overflow-auto bg-slate-900 bg-slate-900/70">
           <div className="bg-slate-50 m-auto p-4 shadow-xl xl:w-1/3 lg:w-1/2 md:w-2/3 sm:w-2/3 w-5/6 rounded-md flex flex-col items-center justify-center gap-8 animate-dropDown">
             <p className="md:text-2xl text-xl text-slate-600 font-bold text-center">
               Top 5 High Score

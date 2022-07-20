@@ -8,8 +8,8 @@ function App() {
       <div className="xl:w-3/4 lg:w-3/4 md:w-4/5 sm:w-4/5 w-5/6 flex flex-col gap-20 justify-center items-center">
         <p className="text-center text-slate-600 font-bold lg:text-2xl md:text-2xl text-xl">
           wellcome to kiet's games homepage, these are some famous games develop
-          by KietNguyen. Please, try to play as much as you like.
-          <p>Hope you love these games !</p>
+          by KietNguyen. Please, try to play as much as you like. Hope you love
+          these games !
         </p>
         <div className="w-full grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-12 justify-center items-center">
           <GameViewCard

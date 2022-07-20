@@ -1,12 +1,16 @@
 // import modules from library
 import React, { FunctionComponent, ReactElement } from "react";
 import { useMediaQuery } from "react-responsive";
+import axios from "axios";
 
 // import modules from local
 import Clock from "../Common/Clock";
 import Puzzle from "./Puzzle";
 import AnnoucementModal from "../Common/AnnoucementModal";
-import { displayPlayTime } from "../../utils/custom-functions";
+import AlertModal from "../Common/AlertModal";
+import { displayPlayTime } from "../../utils/customFunctions";
+import Loading from "../Common/Loading";
+import apiRoutes from "../../utils/apiRoutes";
 
 type slidePuzzlesBoardProps = {};
 
@@ -37,6 +41,31 @@ const SlidePuzzlesBoard: FunctionComponent<slidePuzzlesBoardProps> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const checkIfPuzzlesSolvable = (arrayPuzzles: Array<ReactElement>) => {
+    // case 1: If the puzzle´s grid is odd the puzzle is solvable when the number of inversions is even
+    // case 2: If the puzzle´s grid is even and the empty tile is in an odd row counting from the bottom, the puzzle is solvable if the number of inversions is even.
+    // case 3: If the puzzle´s grid is even and the empty tile is in an even row counting from the bottom, the puzzle is solvable if the number of inversions is odd.
+
+    var inversionsNumber: number = 0;
+
+    for (let i = 0; i < arrayPuzzles.length; i++) {
+      if (arrayPuzzles[i].props.index === 15) {
+        continue;
+      }
+      for (let j = i + 1; j < arrayPuzzles.length; j++) {
+        if (arrayPuzzles[i].props.index > arrayPuzzles[j].props.index) {
+          inversionsNumber = inversionsNumber + 1;
+        }
+      }
+    }
+    // we have 4x4 puzzles so the puzzle's grid is even and the empty tile is 1: odd row counting from the bottom. => case 2
+    if (inversionsNumber % 2 === 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   const swapElementsInArray = (
     array: Array<ReactElement>,
     firstIndex: number,
@@ -49,11 +78,18 @@ const SlidePuzzlesBoard: FunctionComponent<slidePuzzlesBoardProps> = () => {
 
   const shuffleArrayPuzzles = (arrayPuzzles: Array<ReactElement>) => {
     let tempPuzzlesArray: Array<ReactElement> = arrayPuzzles;
-    // using fihser-yates algorithm here
+    // using fisher-yates algorithm here
     for (let i = arrayPuzzles.length - 2; i > 0; i--) {
-      var firstIndex: number = i;
-      var secondIndex: number = Math.floor(Math.random() * (i + 1));
+      let firstIndex: number = i;
+      let secondIndex: number = Math.floor(Math.random() * (i + 1));
       swapElementsInArray(tempPuzzlesArray, firstIndex, secondIndex);
+    }
+    while (!checkIfPuzzlesSolvable(tempPuzzlesArray)) {
+      for (let i = arrayPuzzles.length - 2; i > 0; i--) {
+        let firstIndex: number = i;
+        let secondIndex: number = Math.floor(Math.random() * (i + 1));
+        swapElementsInArray(tempPuzzlesArray, firstIndex, secondIndex);
+      }
     }
     setPuzzlesArray(tempPuzzlesArray);
   };
@@ -205,9 +241,92 @@ const SlidePuzzlesBoard: FunctionComponent<slidePuzzlesBoardProps> = () => {
     setTimeString(value);
   };
 
+  // user submit to highscore board
+  const [userName, setUserName] = React.useState("");
+  const [userSubmitSuccessfully, setUserSubmitSuccessfully] =
+    React.useState(false);
+  const [alertModalContent, setAlertModalContent] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isOnTop, setIsOnTop] = React.useState(false);
+
+  const userSubmitInfo = () => {
+    if (!userName) {
+      return setAlertModalContent("You haven't enter your name yet ");
+    } else {
+      const createNewUser = async (userName: string) => {
+        setIsLoading(true);
+        const highScoreResult = await axios.get(
+          process.env.REACT_APP_DEPLOY_API_ENDPOINT +
+            apiRoutes.GET_ALL_SLIDE_PUZZLES_HIGH_SCORE
+        );
+
+        for (let i = 0; i < highScoreResult?.data.length; i++) {
+          if (
+            highScoreResult?.data[i].userName.toLowerCase() ===
+            userName.toLowerCase()
+          ) {
+            setIsLoading(false);
+            return setAlertModalContent(
+              "This username is already in use, please choose another name !"
+            );
+          }
+        }
+
+        const result = await axios.post(
+          process.env.REACT_APP_DEPLOY_API_ENDPOINT +
+            apiRoutes.ADD_SLIDE_PUZZLES_HIGH_SCORE,
+          {
+            userName: userName,
+            playTime: timeString,
+          }
+        );
+        if (result?.status === 200) {
+          setUserName("");
+          setUserSubmitSuccessfully(true);
+          setIsLoading(false);
+          return setAnnoucementContent("Submit information successfully !");
+        } else {
+          setUserName("");
+          setIsLoading(false);
+          return setAlertModalContent("An error occurred, please try again !");
+        }
+      };
+
+      createNewUser(userName);
+    }
+  };
+
+  React.useEffect(() => {
+    setIsLoading(true);
+    const getListHighScore = async () => {
+      const result = await axios.get(
+        process.env.REACT_APP_DEPLOY_API_ENDPOINT +
+          apiRoutes.GET_ALL_MATCHING_HIGH_SCORE
+      );
+
+      const listHighScore = result?.data;
+      if (listHighScore.length === 5) {
+        for (let i = 0; i < listHighScore.length; i++) {
+          if (timeString.localeCompare(listHighScore[i].playTime) < 0) {
+            setIsOnTop(true);
+            return setIsLoading(false);
+          }
+        }
+      } else {
+        setIsOnTop(true);
+        return setIsLoading(false);
+      }
+      return setIsLoading(false);
+    };
+
+    getListHighScore();
+  }, []);
+
   return (
     <React.Fragment>
-      {isDone ? (
+      {isLoading ? (
+        <Loading />
+      ) : isDone ? (
         <div className="w-5/6">
           <div className="flex flex-col gap-8 justify-center items-center">
             <p className="text-green-600 text-3xl text-center font-bold">
@@ -222,6 +341,45 @@ const SlidePuzzlesBoard: FunctionComponent<slidePuzzlesBoardProps> = () => {
             <p className="text-sky-600 text-3xl text-center font-bold">
               Your play time is: {displayPlayTime(timeString)}
             </p>
+            {!userSubmitSuccessfully ? (
+              isOnTop ? (
+                <div className="w-full flex flex-col gap-8 justify-center items-center px-8">
+                  <p className="text-slate-600 text-2xl text-center">
+                    Your score is enough to enter the top 5, please enter your
+                    name to save it in the high score board !
+                  </p>
+                  <div className="flex gap-0 justify-center items-center">
+                    <input
+                      className="text-2xl text-slate-600 px-4 py-1 bg-white border-solid border-2 border-slate-200 shadow-md rounded-tl-md rounded-bl-md"
+                      type="text"
+                      placeholder="Enter your name here"
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
+                    />
+                    <button
+                      onClick={userSubmitInfo}
+                      className="px-4 py-1.5 h-full bg-amber-500 text-xl text-slate-50 rounded-tr-md rounded-br-md border-solid border-2 border-slate-200 shadow-md"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="w-full flex justify-center items-center px-8">
+                  <p className="text-slate-600 text-xl text-center">
+                    your score is not enough to get into top 5. Try playing
+                    again
+                  </p>
+                </div>
+              )
+            ) : (
+              <div className="w-full flex justify-center items-center px-8">
+                <p className="text-slate-600 text-2xl text-center">
+                  You have successfully submitted the information ! let's keep
+                  playing the game
+                </p>
+              </div>
+            )}
           </div>
         </div>
       ) : (
@@ -250,6 +408,7 @@ const SlidePuzzlesBoard: FunctionComponent<slidePuzzlesBoardProps> = () => {
           </div>
         </div>
       )}
+
       {isRefModalOpen && (
         <div className="fixed z-1 flex items-center justify-center left-0 top-0 w-full h-full overflow-auto bg-slate-900 bg-slate-900/70">
           <div className="bg-slate-50 m-auto p-4 shadow-xl xl:w-1/4 lg:w-1/3 md:w-1/3 sm:w-1/2 w-3/4 rounded-md flex flex-col items-center justify-center gap-8 animate-dropDown">
@@ -295,6 +454,10 @@ const SlidePuzzlesBoard: FunctionComponent<slidePuzzlesBoardProps> = () => {
       <AnnoucementModal
         content={annoucementContent}
         closeModal={() => setAnnoucementContent("")}
+      />
+      <AlertModal
+        content={alertModalContent}
+        closeModal={() => setAlertModalContent("")}
       />
     </React.Fragment>
   );

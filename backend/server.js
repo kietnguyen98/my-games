@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const port = 5000;
 // routes
-const userRouter = require("./routes/user.route");
+const matchingRoute = require("./routes/matching.route");
+const slidePuzzlesRoute = require("./routes/slidePuzzles.route");
 
 const app = express();
 app.use(cors());
@@ -31,7 +32,8 @@ dbConnection.once("open", function () {
   console.log("Connect to MongoDB successfully !");
 });
 
-app.use("/users", userRouter);
+app.use("/matching", matchingRoute);
+app.use("/slide-puzzles", slidePuzzlesRoute);
 app.get("/", (req, res) => res.send("hello World!"));
 app.listen(process.env.PORT || port, () => {
   console.log(`Server is running on port: ${port}`);

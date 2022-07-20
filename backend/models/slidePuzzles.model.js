@@ -2,13 +2,9 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema(
+const slidePuzzlesSchema = new Schema(
   {
     userName: {
-      type: String,
-      required: true,
-    },
-    playMode: {
       type: String,
       required: true,
     },
@@ -20,6 +16,6 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userSchema);
+const SlidePuzzles = mongoose.model("SlidePuzzles", slidePuzzlesSchema);
 
-module.exports = User;
+module.exports = SlidePuzzles;
