@@ -5,15 +5,31 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import MatchingLayout from "./components/Matching/Layout";
 import SlidePuzzlesLayout from "./components/SlidePuzzles/Layout";
+import { createStore, applyMiddleware, Store } from "redux";
+import { Provider } from "react-redux";
+import reducer from "./store/reducer";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
+// decleare redux store
+const store: Store<slidePuzzlesGameState, slidePuzzlesGameAction> & {
+  dispatch: DispatchType;
+} = createStore(reducer, applyMiddleware());
+
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />} />
+        <Route
+          path="/"
+          element={
+            <Provider store={store}>
+              <App />
+            </Provider>
+          }
+        />
         <Route path="/pepe-matching" element={<MatchingLayout />} />
         <Route path="/slide-puzzles" element={<SlidePuzzlesLayout />} />
       </Routes>
